@@ -11,15 +11,16 @@ The datasets contain building features, energy star ratings, and provides additi
 2. Preprocessing the data
 3. ETL data loading to PostgreSQL
 4. Feature reduction and selection using several techniques
-5. Machine Learning techniques to predict the continuous target variable in the data
-6. Unsupervised methods
-    * t-SNE 
-    * K Means Clustering
-8. Supervised methods (using pipelines and hyperparameter tuning)
-    * K Neighbors Regressor
-    * Random Forest Regressor
-    * XGBoost Regressor
-    * CatBoost Regressor
+   * Recursive Feature Elimination (RFE) using a combination of Lasso, Random Forest and Gradient Boost (and voting on best features).
+5. Machine Learning techniques to predict the continuous target variable in the data   
+   * Unsupervised methods
+      * t-SNE 
+      * K Means Clustering
+   * Supervised methods (using pipelines and hyperparameter tuning)
+      * K Neighbors Regressor
+      * Random Forest Regressor
+      * XGBoost Regressor
+      * CatBoost Regressor
 
 ### The project is split into 3 jupyter notebooks:
 1. Preprocessing
@@ -28,20 +29,25 @@ The datasets contain building features, energy star ratings, and provides additi
 
 ## Findings
 Preprocessing was vital to this analysis.  There were missing data, invalid data, and several categorical variables.  The target is the energy consumption of the building, which is a continuous variable.  This made it far more difficult than a binary classification target.  One challenge in the predictive power of the algorithm was the long tail on the target variable.  There were high values that were a magnitude higher than the median and mean of the data.  The bulk of the records for the target were around the mean value with little differentiation among the records at this target level.
-
-Once the data were one-hot-encoded there were 90 variables; one categorical feature had 60 types.  
-##### New Variable Creation
+  
+#### New Variable Creation
 There were also three temperature values for each month of the year: minimum temperatue, average temperature, and maximum temperature.  I converted these min, avg, and max values into a new feature.  I subtracted the value from the median of each, which standardized each min,avg, and max and then I added those values (differences from the median) together to create one temperature feature per month.  This converted 36 features into 12 features.
-##### Feature Reduction
 
-voting
-LassoCV, RandomForestRegressor, GradientBoostRegressor
+#### Feature Reduction
+
+Using a combination of RandomForestRegressor and GradientBoostRegressor with Recursive Feature Elimination, and LassoCV, I was able to score the features and then vote on the best features (selecting either 2 or 3, meaning the feature had to have either two or three of the models select it) in order for it to be considered in the final dataset.  I analyzed these using numerical data only, excluding any categorical features (even if one-hot-encoded) using a StandardScaler, then evaluated the entire dataset (with one-hot-encoded features) using two different scalers, StandardScaler and then Normalize, from the sklearn libraries. 
+
+` fill this in
+The results are the following:
+1. numeric only
+2. standard scaler all features
+3. normalize scaler all features`
 
 
 
 ##### One-Hot-Encoding
 
-
+Once the data were one-hot-encoded there were 90 variables; one categorical feature had 60 types.
 
 
 ## Lessons learned and next steps
